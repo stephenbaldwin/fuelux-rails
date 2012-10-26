@@ -3,6 +3,10 @@
 vendor/ruby
 .rvmrc
 *.swp
+Gemfile.lock
+*.gem
+*.swp
+*~
 log/*.log
 pkg/
 test/dummy/db/*.sqlite3

@@ -43,7 +43,7 @@ Fuel UX was built with Preboot, an open-source pack of mixins and variables to b
 You have to require Fuel UX Rails LESS (fuelux.less) in your bootstrap_and_overrides.css.less
 
 ```css
-@require 'fuelux.less'
+@import 'fuelux.less';
 ```
 
 ## Using Javascripts

@@ -6,9 +6,7 @@
  * Licensed under the MIT license.
  */
 
-define(['require','jquery'],function(require) {
-
-	var $ = require('jquery');
+!function ($) {
 
 
 	// SEARCH CONSTRUCTOR AND PROTOTYPE
@@ -100,4 +98,4 @@ define(['require','jquery'],function(require) {
 		});
 	});
 
-});
+}(window.jQuery);

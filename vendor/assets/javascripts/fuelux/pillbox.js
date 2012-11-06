@@ -6,9 +6,7 @@
  * Licensed under the MIT license.
  */
 
-define(['require','jquery'],function(require) {
-	
-	var $ = require('jquery');
+!function ($) {
 
 
 	// PILLBOX CONSTRUCTOR AND PROTOTYPE
@@ -68,5 +66,5 @@ define(['require','jquery'],function(require) {
 		});
 	});
 	
-});
+}(window.jQuery);
 

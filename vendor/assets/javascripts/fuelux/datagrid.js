@@ -6,10 +6,7 @@
  * Licensed under the MIT license.
  */
 
-define(['require','jquery'],function(require) {
-
-	var $ = require('jquery');
-
+!function ($) {
 
 	// DATAGRID CONSTRUCTOR AND PROTOTYPE
 
@@ -215,4 +212,4 @@ define(['require','jquery'],function(require) {
 
 	$.fn.datagrid.Constructor = Datagrid;
 
-});
+}(window.jQuery);

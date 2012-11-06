@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-define(['require','jquery'],function(require) {
+!function ($) {
 
 	var $ = require('jquery');
 
@@ -182,4 +182,5 @@ define(['require','jquery'],function(require) {
 		});
 	});
 
-});
+}(window.jQuery);
+

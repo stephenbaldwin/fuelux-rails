@@ -5,7 +5,11 @@
  * Copyright (c) 2012 ExactTarget
  * Licensed under the MIT license.
  */
-!function ($) {
+
+define(['require','jquery'],function(require) {
+
+	var $ = require('jquery');
+
 
 	// DATAGRID CONSTRUCTOR AND PROTOTYPE
 
@@ -211,4 +215,4 @@
 
 	$.fn.datagrid.Constructor = Datagrid;
 
-}(window.jQuery);
+});

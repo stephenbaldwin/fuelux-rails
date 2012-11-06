@@ -6,7 +6,9 @@
  * Licensed under the MIT license.
  */
 
-!function ($) {
+define(['require','jquery'],function(require) {
+
+	var $ = require('jquery');
 
 
 	// SEARCH CONSTRUCTOR AND PROTOTYPE
@@ -50,6 +52,7 @@
 
 		buttonclicked: function (e) {
 			e.preventDefault();
+			if ($(e.currentTarget).is('.disabled, :disabled')) return;
 			this.action();
 		},
 
@@ -97,4 +100,4 @@
 		});
 	});
 
-}(window.jQuery);
+});

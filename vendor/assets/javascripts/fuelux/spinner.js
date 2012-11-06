@@ -6,7 +6,9 @@
  * Licensed under the MIT license.
  */
 
-!function ($) {
+define(['require','jquery'],function(require) {
+
+	var $ = require('jquery');
 
 
 	// SPINNER CONSTRUCTOR AND PROTOTYPE
@@ -117,7 +119,7 @@
 		},
 
 		value: function (value) {
-			if (value) {
+			if (typeof value !== 'undefined') {
 				this.options.value = value;
 				this.$input.val(value);
 				return this;
@@ -180,4 +182,4 @@
 		});
 	});
 
-}(window.jQuery);
+});

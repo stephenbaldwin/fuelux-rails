@@ -1,3 +1,3 @@
 module FueluxRails
-  VERSION = "2.1.01"
+  VERSION = "2.1.02"
 end

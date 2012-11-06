@@ -8,8 +8,6 @@
 
 !function ($) {
 
-	var $ = require('jquery');
-
 
 	// SPINNER CONSTRUCTOR AND PROTOTYPE
 

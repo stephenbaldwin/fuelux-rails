@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-!function($){
+!function ($) {
 
 
 	// DATAGRID CONSTRUCTOR AND PROTOTYPE

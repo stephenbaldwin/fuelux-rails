@@ -6,8 +6,7 @@
  * Licensed under the MIT license.
  */
 
-!function($){
-
+!function ($) {
 
 	// COMBOBOX CONSTRUCTOR AND PROTOTYPE
 

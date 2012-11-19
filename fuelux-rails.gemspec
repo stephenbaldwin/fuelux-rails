@@ -16,9 +16,10 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = 'fuelux-rails'
 
-  s.files = Dir["{app,config,db,lib,vendor}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  #s.files = Dir["{app,config,db,lib,vendor}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["lib/**/*"] + Dir["vendor/**/*"] + ["Rakefile", "README.md", "COPYING", "THIRD-PARTY"]
+
   s.test_files = Dir["test/**/*"]
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
   s.add_dependency             'railties',   '>= 3.1'

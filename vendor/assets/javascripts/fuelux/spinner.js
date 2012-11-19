@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-!function ($) {
+!function($){
 
 
 	// SPINNER CONSTRUCTOR AND PROTOTYPE
@@ -181,4 +181,3 @@
 	});
 
 }(window.jQuery);
-

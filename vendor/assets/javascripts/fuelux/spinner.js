@@ -8,7 +8,6 @@
 
 !function ($) {
 
-
 	// SPINNER CONSTRUCTOR AND PROTOTYPE
 
 	var Spinner = function (element, options) {

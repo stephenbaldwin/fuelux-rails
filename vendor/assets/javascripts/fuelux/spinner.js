@@ -39,6 +39,8 @@
 			this.switches.speed = 500;
 		}
 
+		this.lastValue = null;
+
 		this.render();
 
 		if (this.options.disabled) {
@@ -65,12 +67,25 @@
 				this.options.value = newVal/1;
 			}
 
-			this.$element.trigger('change');
+			this.triggerChangedEvent();
 		},
 
 		stopSpin: function () {
 			clearTimeout(this.switches.timeout);
 			this.switches.count = 1;
+			this.triggerChangedEvent();
+		},
+
+		triggerChangedEvent: function () {
+			var currentValue = this.value();
+			if (currentValue === this.lastValue) return;
+
+			this.lastValue = currentValue;
+
+			// Primary changed event
+			this.$element.trigger('changed', currentValue);
+
+			// Undocumented, kept for backward compatibility
 			this.$element.trigger('change');
 		},
 
@@ -174,9 +189,9 @@
 	$(function () {
 		$('body').on('mousedown.spinner.data-api', '.spinner', function (e) {
 			var $this = $(this);
-			if ($this.data('.spinner')) return;
+			if ($this.data('spinner')) return;
 			$this.spinner($this.data());
 		});
 	});
 
-}(window.jQuery);
+}(window.jQuery);  

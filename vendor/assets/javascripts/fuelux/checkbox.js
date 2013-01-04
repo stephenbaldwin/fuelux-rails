@@ -7,7 +7,7 @@
  */
 
 !function ($) {
-
+  
 	// CHECKBOX CONSTRUCTOR AND PROTOTYPE
 
 	var Checkbox = function (element, options) {

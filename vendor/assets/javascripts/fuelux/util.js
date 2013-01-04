@@ -23,4 +23,4 @@
 			return fuelTextExactCI(elem, match[3]);
 		};
 
-}(window.jQuery);
+}(window.jQuery);    

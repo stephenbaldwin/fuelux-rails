@@ -1,7 +1,7 @@
-# Fuel UX for Rails 3.1 Asset Pipeline
+# Fuel UX for Rails 3.1/Rails 4.0 Asset Pipeline
 Extends Twitter Bootstrap with additional lightweight JavaScript controls. Easy to install, customize, update, and optimize. 
 
-fuelux-rails project integrates Fuel UX into the Twitter Bootstrap CSS toolkit for Rails 3.1 Asset Pipeline (Rails 3.2 supported)
+fuelux-rails project integrates Fuel UX into the Twitter Bootstrap CSS toolkit for Rails 3.1/Rails 4.0 Asset Pipeline (Rails 3.2 supported)
 
 ## Installing Gem
 

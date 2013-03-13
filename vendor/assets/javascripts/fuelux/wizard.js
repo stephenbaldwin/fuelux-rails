@@ -11,13 +11,18 @@
 	// WIZARD CONSTRUCTOR AND PROTOTYPE
 
 	var Wizard = function (element, options) {
+		var kids;
+
 		this.$element = $(element);
 		this.options = $.extend({}, $.fn.wizard.defaults, options);
 		this.currentStep = 1;
 		this.numSteps = this.$element.find('li').length;
 		this.$prevBtn = this.$element.find('button.btn-prev');
 		this.$nextBtn = this.$element.find('button.btn-next');
-		this.nextText = this.$nextBtn.text();
+
+		kids = this.$nextBtn.children().detach();
+		this.nextText = $.trim(this.$nextBtn.text());
+		this.$nextBtn.append(kids);
 
 		// handle events
 		this.$prevBtn.on('click', $.proxy(this.previous, this));
@@ -44,11 +49,8 @@
 				if (typeof this.lastText !== 'undefined') {
 					// replace text
 					var text = (lastStep !== true) ? this.nextText : this.lastText;
-					this.$nextBtn
-						.contents()
-						.filter(function () {
-							return this.nodeType === 3;
-						}).replaceWith(text);
+					var kids = this.$nextBtn.children().detach();
+					this.$nextBtn.text(text).append(kids);
 				}
 			}
 
@@ -81,6 +83,11 @@
 			var li = $(e.currentTarget);
 
 			var index = $('.steps li').index(li);
+
+			var evt = $.Event('stepclick');
+			this.$element.trigger(evt, {step: index + 1});
+			if (evt.isDefaultPrevented()) return;
+
 			this.currentStep = (index + 1);
 			this.setState();
 		},

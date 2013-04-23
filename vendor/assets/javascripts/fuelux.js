@@ -4,6 +4,7 @@
 //= require fuelux/pillbox
 //= require fuelux/search
 //= require fuelux/spinner
+//= require fuelux/checkbox
 //= require fuelux/radio
 //= require fuelux/select
 //= require fuelux/tree

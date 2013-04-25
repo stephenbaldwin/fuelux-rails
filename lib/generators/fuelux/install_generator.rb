@@ -21,7 +21,7 @@ module Fuelux
         if File.exist?('app/assets/javascripts/application.js')
           # Add our own require:
           content = File.read("app/assets/javascripts/application.js")
-          if content.match(/require_tree\s+\.\s*$/)
+          if content.match(/require\s+fuelux\.js\s*$/)
             # Good enough - that'll include our Fuel UX js
           else
             insert_into_file "app/assets/javascripts/application.js", "//= require fuelux.js\n", :after => "jquery_ujs\n"

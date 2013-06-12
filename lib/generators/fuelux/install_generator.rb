@@ -13,7 +13,7 @@ module Fuelux
         else
           puts <<-EOM
           Warning:
-            app/assets/stylesheets/bootstrap_override.css.less does not exist
+            app/assets/stylesheets/bootstrap_overrides.css.less does not exist
             Run "rails generate bootstrap:install" and then rerun "rails generate fuelux:install"
           EOM
         end

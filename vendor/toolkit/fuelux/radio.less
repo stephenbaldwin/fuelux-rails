@@ -1,10 +1,12 @@
 .radio-custom {
 	input[type=radio] {
-		display: none;
+	/* IE cannot fire events if display none or visibility hidden */
+	position: relative;
+	top: -99999px;
 	}
 
 	i {
-		background-image: image-url('form.png');
+		background-image: url(../img/form.png);
 		background-position: 0 -15px;
 		background-repeat: no-repeat;
 		margin-left: -20px;

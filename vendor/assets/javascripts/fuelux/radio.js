@@ -8,6 +8,9 @@
 
 !function ($) {
 
+
+
+
 	// RADIO CONSTRUCTOR AND PROTOTYPE
 
 	var Radio = function (element, options) {
@@ -31,9 +34,16 @@
 
 		constructor: Radio,
 
-		setState: function ($radio, resetGroupState) {
+		setState: function ($radio) {
+			$radio = $radio || this.$radio;
+
 			var checked = $radio.is(':checked');
 			var disabled = $radio.is(':disabled');
+			
+			// reset classes
+            this.$icon.removeClass('checked').removeClass('disabled');
+
+			this.$icon.removeClass('checked disabled');
 
 			// set state of radio
 			if (checked === true) {

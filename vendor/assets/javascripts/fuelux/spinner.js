@@ -8,6 +8,9 @@
 
 !function ($) {
 
+
+
+
 	// SPINNER CONSTRUCTOR AND PROTOTYPE
 
 	var Spinner = function (element, options) {
@@ -52,8 +55,15 @@
 		constructor: Spinner,
 
 		render: function () {
-			this.$input.val(this.options.value);
-			this.$input.attr('maxlength',(this.options.max + '').split('').length);
+			var inputValue = this.$input.val();
+
+			if (inputValue) {
+				this.value(inputValue);
+			} else {
+				this.$input.val(this.options.value);
+			}
+
+			this.$input.attr('maxlength', (this.options.max + '').split('').length);
 		},
 
 		change: function () {
@@ -127,11 +137,15 @@
 				} else {
 					this.value(newVal);
 				}
+			} else if (this.options.cycle) {
+				var cycleVal = dir ? this.options.min : this.options.max;
+				this.value(cycleVal);
 			}
 		},
 
 		value: function (value) {
-			if (typeof value !== 'undefined') {
+			if (!isNaN(parseFloat(value)) && isFinite(value)) {
+				value = parseFloat(value);
 				this.options.value = value;
 				this.$input.val(value);
 				return this;
@@ -187,11 +201,11 @@
 	// SPINNER DATA-API
 
 	$(function () {
-		$('body').on('mousedown.spinner.data-api', '.spinner', function (e) {
+		$('body').on('mousedown.spinner.data-api', '.spinner', function () {
 			var $this = $(this);
 			if ($this.data('spinner')) return;
 			$this.spinner($this.data());
 		});
 	});
 
-}(window.jQuery);  
+}(window.jQuery);

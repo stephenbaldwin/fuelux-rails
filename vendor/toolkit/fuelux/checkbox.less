@@ -1,10 +1,22 @@
+.form-inline {
+	.checkbox-custom {
+		padding-left: 20px;
+	}
+
+	.checkbox-custom .checkbox {
+		padding-left: 16px;
+	}
+}
+
 .checkbox-custom {
 	input[type=checkbox] {
-		display: none;
+	/* IE cannot fire events if display none or visibility hidden */
+	position: relative;
+	top: -99999px;
 	}
 
 	i {
-		background-image: image-url('form.png');
+		background-image: url(../img/form.png);
 		background-position: 0 1px;
 		background-repeat: no-repeat;
 		margin-left: -20px;

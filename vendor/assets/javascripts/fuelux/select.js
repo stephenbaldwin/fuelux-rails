@@ -8,6 +8,9 @@
 
 !function ($) {
 
+
+
+
     // SELECT CONSTRUCTOR AND PROTOTYPE
 
     var Select = function (element, options) {
@@ -42,28 +45,22 @@
         },
 
         resize: function() {
-            var el = $('#selectTextSize')[0];
-
-            // create element if it doesn't exist
-            // used to calculate the length of the longest string
-            if(!el) {
-                $('<div/>').attr({id:'selectTextSize'}).appendTo('body');
-            }
-
-            var width = 0;
             var newWidth = 0;
+            var sizer = $('<div/>').addClass('select-sizer');
+            var width = 0;
+
+            $('body').append(sizer);
 
             // iterate through each item to find longest string
             this.$element.find('a').each(function () {
-                var $this = $(this);
-                var txt = $this.text();
-                var $txtSize = $('#selectTextSize');
-                $txtSize.text(txt);
-                newWidth = $txtSize.outerWidth();
+                sizer.text($(this).text());
+                newWidth = sizer.outerWidth();
                 if(newWidth > width) {
                     width = newWidth;
                 }
             });
+
+            sizer.remove();
 
             this.$label.width(width);
         },
@@ -79,7 +76,7 @@
         },
 
         selectByValue: function(value) {
-            var selector = 'li[data-value=' + value + ']';
+            var selector = 'li[data-value="' + value + '"]';
             this.selectBySelector(selector);
         },
 
@@ -156,7 +153,7 @@
             });
         });
 
-        $('body').on('mousedown.select.data-api', '.select', function (e) {
+        $('body').on('mousedown.select.data-api', '.select', function () {
             var $this = $(this);
             if ($this.data('select')) return;
             $this.select($this.data());

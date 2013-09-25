@@ -8,6 +8,9 @@
 
 !function ($) {
 
+
+
+
 	// COMBOBOX CONSTRUCTOR AND PROTOTYPE
 
 	var Combobox = function (element, options) {
@@ -47,7 +50,7 @@
 		},
 
 		selectByValue: function (value) {
-			var selector = 'li[data-value=' + value + ']';
+			var selector = 'li[data-value="' + value + '"]';
 			this.selectBySelector(selector);
 		},
 
@@ -165,7 +168,7 @@
 			});
 		});
 
-		$('body').on('mousedown.combobox.data-api', '.combobox', function (e) {
+		$('body').on('mousedown.combobox.data-api', '.combobox', function () {
 			var $this = $(this);
 			if ($this.data('combobox')) return;
 			$this.combobox($this.data());

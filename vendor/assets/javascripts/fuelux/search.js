@@ -8,6 +8,9 @@
 
 !function ($) {
 
+
+
+
 	// SEARCH CONSTRUCTOR AND PROTOTYPE
 
 	var Search = function (element, options) {
@@ -119,4 +122,4 @@
 		});
 	});
 
-}(window.jQuery);  
+}(window.jQuery);

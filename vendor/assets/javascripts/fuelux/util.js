@@ -8,6 +8,8 @@
 
 !function ($) {
 
+
+
 	// custom case-insensitive match expression
 	function fuelTextExactCI(elem, text) {
 		return (elem.textContent || elem.innerText || $(elem).text() || '').toLowerCase() === (text || '').toLowerCase();
@@ -23,4 +25,4 @@
 			return fuelTextExactCI(elem, match[3]);
 		};
 
-}(window.jQuery);    
+}(window.jQuery);

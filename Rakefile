@@ -1,6 +1,7 @@
 #!/usr/bin/env rake
+
 begin
-  require 'bundler/setup'
+  #require 'bundler/setup'
 rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
@@ -23,7 +24,10 @@ end
 
 
 
-Bundler::GemHelper.install_tasks
+Bundler::GemHelper.install_tasks if defined? Bundler::GemHelper
+
+load 'lib/tasks/fuelux-rails_tasks.rake'
+
 
 require 'rake/testtask'
 
@@ -33,6 +37,5 @@ Rake::TestTask.new(:test) do |t|
   t.pattern = 'test/**/*_test.rb'
   t.verbose = false
 end
-
 
 task :default => :test

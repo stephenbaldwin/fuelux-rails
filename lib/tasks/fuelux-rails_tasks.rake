@@ -30,8 +30,8 @@ namespace :fuelux_rails do
 		rescue OpenURI::HTTPError
 			return ''
 		end
-		open(path, 'wb') do |file|
-			file << original_file.read
+		open(path, 'wb') do |doc|
+			doc << original_file.read
 		end
 
 		lines = IO.readlines(path).map do |line|
@@ -47,7 +47,7 @@ namespace :fuelux_rails do
 			end
 		end
 
-		File.open(path, 'w') {|file| file.puts lines }
+		File.open(path, 'w') {|doc| doc.puts lines }
 		"//= require fuelux/#{file}\n"
 	end
 
@@ -68,11 +68,13 @@ namespace :fuelux_rails do
 		rescue OpenURI::HTTPError
 			return ''
 		end
-		open(path, 'wb') do |file|
-			file << original_file.read
+		open(path, 'wb') do |doc|
+			doc << original_file.read
 		end
-		lines = IO.readlines(path)
-		File.open(path, 'w') {|file| file.puts lines }
+		lines = IO.readlines(path).map do |line|
+			line.gsub /url\(\.{2}\/img\/([^\)]+)\)/, "image-url('fuelux/\\1')"
+		end
+		File.open(path, 'w') {|doc| doc.puts lines }
 		%(@import "fuelux/#{file}.less";\n)
 	end
 

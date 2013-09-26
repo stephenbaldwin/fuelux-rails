@@ -10,3 +10,4 @@
 //= require fuelux/spinner
 //= require fuelux/tree
 //= require fuelux/wizard
+

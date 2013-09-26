@@ -8,8 +8,12 @@ module Fuelux
 
       def generate_install
 
+				conf = File.read("config/environments/production.rb")
+				insert_into_file "config/environments/production.rb", "  config.assets.precompile += %w( *.png )\n", :after => %(# Precompile additional assets.\n) unless conf.match(/config\.assets\.precompile\s\+=\s%w\(.*\*\.png.*\)$/)
+					
         if File.exist?('app/assets/stylesheets/bootstrap_and_overrides.css.less')
           insert_into_file "app/assets/stylesheets/bootstrap_and_overrides.css.less", "@import 'fuelux.less';\n", :after => %(@import "fontawesome";\n)
+          insert_into_file "app/assets/stylesheets/bootstrap_and_overrides.css.less", "@import 'fuelux.less';\n", :after => %(@import "fontawesome/font-awesome";\n)
         else
           puts <<-EOM
           Warning:

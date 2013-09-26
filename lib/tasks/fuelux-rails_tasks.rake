@@ -12,18 +12,19 @@ namespace :fuelux_rails do
 		puts "Updated assets to #{tag}"
 	end
 
-	SCRIPTS_REPO = "https://raw.github.com/ExactTarget/fuelux/%s/src/%s.js"
+	SCRIPTS_REPO = "https://raw.github.com/troymccabe/fuelux/bootstrap3/js/%s.js"
 	SCRIPTS_PATH = "./vendor/assets/javascripts/fuelux/%s.js"
 
-	SCRIPTS = %w( util checkbox combobox datagrid intelligent-dropdown pillbox 
+	SCRIPTS = %w( variables util checkbox combobox datagrid intelligent-dropdown pillbox 
 								radio search select spinner tree wizard).freeze
 
-	STYLESHEETS_REPO = "https://raw.github.com/ExactTarget/fuelux/%s/src/less/%s.less"
+	STYLESHEETS_REPO = "https://raw.github.com/troymccabe/fuelux/bootstrap3/less/%s.less"
 	STYLESHEETS_PATH = "./vendor/toolkit/fuelux/%s.less"
 	EXTRA_VARIABLES = "// Tree\n// --------------------------------------------------\n@treeBackgroundHover: #DFEEF5;\n@treeBackgroundSelect: #B9DFF1;\n"
 
 	def update_javascript(file, tag = 'master')
-		repo = SCRIPTS_REPO % [tag, file]
+		#repo = SCRIPTS_REPO % [tag, file]
+		repo = SCRIPTS_REPO % file
 		path = SCRIPTS_PATH % file
 		begin
 			original_file = open(repo)
@@ -61,7 +62,7 @@ namespace :fuelux_rails do
 	end
 
 	def update_stylesheet(file, tag = 'master')
-		repo = STYLESHEETS_REPO % [tag, file]
+		repo = STYLESHEETS_REPO % file
 		path = STYLESHEETS_PATH % file
 		begin
 			original_file = open(repo)
@@ -72,7 +73,7 @@ namespace :fuelux_rails do
 			doc << original_file.read
 		end
 		lines = IO.readlines(path).map do |line|
-			line.gsub /url\(\.{2}\/img\/([^\)]+)\)/, "image-url('fuelux/\\1')"
+			line.gsub /url\(@fuelux-sprite-path\)/, "image-url('fuelux/form.png')"
 		end
 		File.open(path, 'w') {|doc| doc.puts lines }
 		%(@import "fuelux/#{file}.less";\n)
@@ -82,7 +83,7 @@ namespace :fuelux_rails do
 		
 		requires = SCRIPTS.map do |script|
 			update_stylesheet script, tag
-		end.unshift EXTRA_VARIABLES
+		end #.unshift EXTRA_VARIABLES
 		
 		open('./vendor/toolkit/fuelux.less', 'wb') do |file|
 			requires.each {|r| file << r }

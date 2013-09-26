@@ -1,74 +1,75 @@
+//
+// Checkbox
+// --------------------------------------------------
+
+// Core pillbox styles
 .pillbox {
+  padding: 3px;
 
-	padding: 3px;
+  ul {
+    display: inline-block;
+    margin: 0;
+  }
 
-	ul {
-		display: inline-block;
-		margin: 0;
-	}
+  li {
+    // Begin Bootstrap .label
+    display: inline;
+    padding: 1px 4px 2px; //padding: .25em .6em;
+    font-size: @font-size-small; //font-size: 75%;
+    font-weight: 700; //font-weight: 500;
+    line-height: @line-height-computed; //line-height: 1;
+    color: @label-color;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    // End Bootstrap .label
 
-	li {
+    background-color: @gray-light;
+    display: inline-block;
+    margin: 2px;
+    cursor: pointer;
+    float: left;
 
-		// Begin Bootstrap .label
-		font-size: @baseFontSize * .846;
-		font-weight: bold;
-		line-height: 21px; // modified
-		color: @white;
-		vertical-align: baseline;
-		//white-space: nowrap; //removed
-		text-shadow: 0 -1px 0 rgba(0,0,0,.25);
-		background-color: @grayLight;
-		padding: 1px 4px 2px;
-		.border-radius(3px);
-		// End Bootstrap .label
+    &:after {
+      // Begin Bootstrap .close
+      float: right;
+      font-size: (@font-size-base * 1.5);
+      font-weight: @close-font-weight;
+      line-height: @line-height-computed; //line-height: 1;
+      color: @close-color;
+      text-shadow: @close-text-shadow;
+      .opacity(.2);
+      // End Bootstrap .close
 
-		display: inline-block;
-		margin: 2px;
-		cursor: pointer;
-		float:left;
+      padding-left: 4px;
+      position: relative;
+      top: -2px;
+      content: " \00D7"
+    }
 
-		&:after {
+    &:hover {
+      &:after {
+        .opacity(.4);
+      }
+    }
 
-			// Begin Bootstrap .close
-			float: right;
-			font-size: 20px;
-			font-weight: bold;
-			line-height: @baseLineHeight;
-			color: @black;
-			text-shadow: 0 1px 0 rgba(255,255,255,1);
-			.opacity(20);
-			// End Bootstrap .close
+    &.status {
+      &-important {
+        background-color: @state-danger-text;
+      }
 
-			padding-left: 4px;
-			position: relative;
-			top: -2px;
-			content: " \00D7"
-		}
+      &-warning {
+        background-color: @state-warning-text;
+      }
 
-		&:hover {
-			&:after {
-				.opacity(40);
-			}
-		}
+      &-success {
+        background-color: @state-success-text;
+      }
 
-		&.status {
-			&-important {
-				background-color: @errorText;
-			}
-
-			&-warning {
-				background-color: @orange;
-			}
-
-			&-success {
-				background-color: @successText;
-			}
-
-			&-info {
-				background-color: @infoText;
-			}
-		}
-
-	}
-
+      &-info {
+        background-color: @state-info-text;
+      }
+    }
+  }
 }

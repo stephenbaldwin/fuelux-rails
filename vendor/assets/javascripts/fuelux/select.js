@@ -6,13 +6,9 @@
  * Licensed under the MIT license.
  */
 
-!function ($) {
-
-
-
-
++function ($) {
+    "use strict";
     // SELECT CONSTRUCTOR AND PROTOTYPE
-
     var Select = function (element, options) {
         this.$element = $(element);
         this.options = $.extend({}, $.fn.select.defaults, options);
@@ -27,9 +23,7 @@
     };
 
     Select.prototype = {
-
         constructor: Select,
-
         itemclicked: function (e) {
             this.$selectedItem = $(e.target).parent();
             this.$label.text(this.$selectedItem.text());
@@ -44,59 +38,67 @@
             e.preventDefault();
         },
 
-        resize: function() {
-            var newWidth = 0;
-            var sizer = $('<div/>').addClass('select-sizer');
-            var width = 0;
+        resize: function () {
+            var el = $('#fuelux-select-text-size')[0];
 
-            $('body').append(sizer);
+            // create element if it doesn't exist
+            // used to calculate the length of the longest string
+            if (!el) {
+                $('<div/>').attr({id: 'fuelux-select-text-size'}).appendTo('body');
+            }
+
+            var width = 0;
+            var newWidth = 0;
 
             // iterate through each item to find longest string
             this.$element.find('a').each(function () {
-                sizer.text($(this).text());
-                newWidth = sizer.outerWidth();
-                if(newWidth > width) {
+                var $this = $(this);
+                var txt = $this.text();
+                var $txtSize = $('#fuelux-select-text-size');
+                $txtSize.text(txt);
+                newWidth = $txtSize.outerWidth();
+                if (newWidth > width) {
                     width = newWidth;
                 }
             });
 
-            sizer.remove();
-
             this.$label.width(width);
         },
 
-        selectedItem: function() {
+        selectedItem: function () {
             var txt = this.$selectedItem.text();
             return $.extend({ text: txt }, this.$selectedItem.data());
         },
 
-        selectByText: function(text) {
-            var selector = 'li a:fuelTextExactCI(' + text + ')';
-            this.selectBySelector(selector);
+        selectByText: function (text) {
+            var me = this;
+            this.$element.find('li').each(function(index, item) {
+                var $item = $(item);
+                if ((item.textContent || item.innerText || $item.text() || '').toLowerCase() === (text || '').toLowerCase()) {
+                    me.setSelectedItem($item);
+                }
+            });
         },
 
-        selectByValue: function(value) {
+        selectByValue: function (value) {
             var selector = 'li[data-value="' + value + '"]';
             this.selectBySelector(selector);
         },
 
-        selectByIndex: function(index) {
+        selectByIndex: function (index) {
             // zero-based index
             var selector = 'li:eq(' + index + ')';
             this.selectBySelector(selector);
         },
 
-        selectBySelector: function(selector) {
-            var item = this.$element.find(selector);
-
-            this.$selectedItem = item;
-            this.$label.text(this.$selectedItem.text());
+        selectBySelector: function (selector) {
+            this.setSelectedItem(this.$element.find(selector));
         },
 
-        setDefaultSelection: function() {
+        setDefaultSelection: function () {
             var selector = 'li[data-selected=true]:first';
             var item = this.$element.find(selector);
-            if(item.length === 0) {
+            if (item.length === 0) {
                 // select first item
                 this.selectByIndex(0);
             }
@@ -108,20 +110,22 @@
             }
         },
 
-        enable: function() {
+        setSelectedItem: function ($item) {
+            this.$selectedItem = $item;
+            this.$label.text(this.$selectedItem.text());
+        },
+
+        enable: function () {
             this.$button.removeClass('disabled');
         },
 
-        disable: function() {
+        disable: function () {
             this.$button.addClass('disabled');
         }
-
     };
 
-
     // SELECT PLUGIN DEFINITION
-
-    $.fn.select = function (option,value) {
+    $.fn.select = function (option, value) {
         var methodReturn;
 
         var $set = this.each(function () {
@@ -137,14 +141,10 @@
     };
 
     $.fn.select.defaults = {};
-
     $.fn.select.Constructor = Select;
 
-
     // SELECT DATA-API
-
     $(function () {
-
         $(window).on('load', function () {
             $('.select').each(function () {
                 var $this = $(this);
@@ -153,11 +153,10 @@
             });
         });
 
-        $('body').on('mousedown.select.data-api', '.select', function () {
+        $('body').on('mousedown.select.data-api', '.select', function (e) {
             var $this = $(this);
             if ($this.data('select')) return;
             $this.select($this.data());
         });
     });
-
 }(window.jQuery);

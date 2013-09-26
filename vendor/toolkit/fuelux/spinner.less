@@ -1,51 +1,57 @@
-.spinner{
+//
+// Spinner
+// --------------------------------------------------
 
-	input {
-		width: 43px;
-		float: left;
-	}
+.spinner-button {
+  padding: 2px 0 4px 1px;
+  top: 2px;
+  height: 15px;
 
-	.btn {
-	    position: relative;
-		width: 20px;
-		height: 14px;
-		padding-top: 0;
-		padding-right: 9px;
-		padding-left: 9px;
+  i {
+    position: relative;
+    text-align: center;
+    top: -4px;
+  }
+}
 
-		&.disabled {
-			cursor: not-allowed;
-		}
-	}
+.spinner {
+  input {
+    width: 60px;
+    float: left;
+  }
 
-	.spinner-buttons {
-		position: relative;
-		float: left;
-		height: 28px;
-		width: 20px;
-		left: -22px;
-	}
+  .btn {
+    position: relative;
+    width: 20px;
+    height: 14px;
+    padding-top: 0;
+    padding-right: 9px;
+    padding-left: 9px;
 
-	.spinner-up {
+    &.disabled {
+      cursor: not-allowed;
+    }
+  }
 
-		padding: 0 0 4px 1px;
-		top: 2px;
+  .spinner-buttons {
+    position: relative;
+    float: left;
+    height: 28px;
+    width: 20px;
+    left: -22px;
+  }
 
-		i {
-			position:relative;
-			top: -4px;
-		}
-	}
+  .spinner-up {
+    .spinner-button;
+    height: 16px;
+  }
 
-	.spinner-down {
+  .spinner-down {
+    .spinner-button;
 
-		padding: 0 0 4px 1px;
-		top: 2px;
-		height: 13px;
-
-		i {
-			position:relative;
-			top: -5px;
-		}
-	}
+    i {
+      left: -1px;
+      top: -3px;
+    }
+  }
 }

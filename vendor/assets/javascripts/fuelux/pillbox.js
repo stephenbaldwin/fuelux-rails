@@ -6,115 +6,56 @@
  * Licensed under the MIT license.
  */
 
-!function ($) {
++function ($) {
+    "use strict";
+    // PILLBOX CONSTRUCTOR AND PROTOTYPE
+    var Pillbox = function (element, options) {
+        this.$element = $(element);
+        this.options = $.extend({}, $.fn.pillbox.defaults, options);
+        this.$element.on('click', 'li', $.proxy(this.itemclicked, this));
+    };
 
+    Pillbox.prototype = {
+        constructor: Pillbox,
 
+        items: function () {
+            return this.$element.find('li').map(function () {
+                var $this = $(this);
+                return $.extend({ text: $this.text() }, $this.data());
+            }).get();
+        },
 
-	// PILLBOX CONSTRUCTOR AND PROTOTYPE
+        itemclicked: function (e) {
+            $(e.currentTarget).remove();
+            e.preventDefault();
+        }
+    };
 
-	var Pillbox = function (element, options) {
-		this.$element = $(element);
-		this.options = $.extend({}, $.fn.pillbox.defaults, options);
-		this.$element.on('click', 'li', $.proxy(this.itemclicked, this));
-	};
+    // PILLBOX PLUGIN DEFINITION
+    $.fn.pillbox = function (option) {
+        var methodReturn;
 
-	Pillbox.prototype = {
-		constructor : Pillbox,
+        var $set = this.each(function () {
+            var $this = $(this);
+            var data = $this.data('pillbox');
+            var options = typeof option === 'object' && option;
 
-		items: function() {
-			return this.$element.find('li').map(function() {
-				var $this = $(this);
-				return $.extend({
-					text : $this.text()
-				}, $this.data());
-			}).get();
-		},
+            if (!data) $this.data('pillbox', (data = new Pillbox(this, options)));
+            if (typeof option === 'string') methodReturn = data[option]();
+        });
 
-		itemclicked: function(e) {
+        return (methodReturn === undefined) ? $set : methodReturn;
+    };
 
-			var $li = $(e.currentTarget);
-			var data = $.extend({
-				text : $li.html()
-			}, $li.data());
+    $.fn.pillbox.defaults = {};
+    $.fn.pillbox.Constructor = Pillbox;
 
-			$li.remove();
-			e.preventDefault();
-
-			this.$element.trigger('removed', data);
-		},
-
-		itemCount: function() {
-
-			return this.$element.find('li').length;
-		},
-
-		addItem: function(text, value) {
-
-			value = value || text;
-
-			//<li data-value="foo">Item One</li>
-
-			var $li = $('<li data-value="' + value + '">' + text + '</li>');
-
-			this.$element.find('ul').append($li);
-
-			return $li;
-		},
-
-		removeBySelector: function(selector) {
-
-			this.$element.find('ul').find(selector).remove();
-		},
-
-		removeByValue: function(value) {
-
-			var selector = 'li[data-value="' + value + '"]';
-
-			this.removeBySelector(selector);
-		},
-
-		removeByText: function(text) {
-
-			var selector = 'li:contains("' + text + '")';
-
-			this.removeBySelector(selector);
-		},
-
-		clear: function() {
-
-			this.$element.find('ul').empty();
-		}
-	};
-
-	// PILLBOX PLUGIN DEFINITION
-
-	$.fn.pillbox = function (option, value1, value2) {
-		var methodReturn;
-
-		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('pillbox');
-			var options = typeof option === 'object' && option;
-
-			if (!data) $this.data('pillbox', ( data = new Pillbox(this, options)));
-			if ( typeof option === 'string') methodReturn = data[option](value1, value2);
-		});
-
-		return (methodReturn === undefined) ? $set : methodReturn;
-	};
-
-	$.fn.pillbox.defaults = {};
-
-	$.fn.pillbox.Constructor = Pillbox;
-
-	// PILLBOX DATA-API
-
-	$(function () {
-		$('body').on('mousedown.pillbox.data-api', '.pillbox', function () {
-			var $this = $(this);
-			if ($this.data('pillbox')) return;
-			$this.pillbox($this.data());
-		});
-	});
+    // PILLBOX DATA-API
+    $(function () {
+        $('body').on('mousedown.pillbox.data-api', '.pillbox', function (e) {
+            var $this = $(this);
+            if ($this.data('pillbox')) return;
+            $this.pillbox($this.data());
+        });
+    });
 }(window.jQuery);
-

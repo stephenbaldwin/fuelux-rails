@@ -6,120 +6,120 @@
  * Licensed under the MIT license.
  */
 
-!function ($) {
++function ($) {
+    "use strict";
+    // SEARCH CONSTRUCTOR AND PROTOTYPE
+    var Search = function (element, options) {
+        this.$element = $(element);
+        this.options = $.extend({}, $.fn.search.defaults, options);
 
+        this.$button = this.$element.find('button')
+            .on('click', $.proxy(this.buttonclicked, this));
 
+        this.$input = this.$element.find('input')
+            .on('keydown', $.proxy(this.keypress, this))
+            .on('keyup', $.proxy(this.keypressed, this));
 
+        this.$icon = this.$element.find('i');
+        this.activeSearch = '';
+    };
 
-	// SEARCH CONSTRUCTOR AND PROTOTYPE
+    Search.prototype = {
+        constructor: Search,
+        search: function (searchText) {
+            this.showClearIcon();
+            this.activeSearch = searchText;
+            this.$element.trigger('searched', searchText);
+        },
 
-	var Search = function (element, options) {
-		this.$element = $(element);
-		this.options = $.extend({}, $.fn.search.defaults, options);
+        clear: function () {
+            this.showSearchIcon();
+            this.activeSearch = '';
+            this.$input.val('');
+            this.$element.trigger('cleared');
+        },
 
-		this.$button = this.$element.find('button')
-			.on('click', $.proxy(this.buttonclicked, this));
+        action: function () {
+            var val = this.$input.val();
+            var inputEmptyOrUnchanged = val === '' || val === this.activeSearch;
 
-		this.$input = this.$element.find('input')
-			.on('keydown', $.proxy(this.keypress, this))
-			.on('keyup', $.proxy(this.keypressed, this));
+            if (this.activeSearch && inputEmptyOrUnchanged) {
+                this.clear();
+            } else if (val) {
+                this.search(val);
+            }
+        },
 
-		this.$icon = this.$element.find('i');
-		this.activeSearch = '';
-	};
+        buttonclicked: function (e) {
+            e.preventDefault();
+            if ($(e.currentTarget).is('.disabled, :disabled')) return;
+            this.action();
+        },
 
-	Search.prototype = {
+        keypress: function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+            }
+        },
 
-		constructor: Search,
+        keypressed: function (e) {
+            var val;
 
-		search: function (searchText) {
-			this.$icon.attr('class', 'icon-remove');
-			this.activeSearch = searchText;
-			this.$element.trigger('searched', searchText);
-		},
+            if (e.which === 13) {
+                e.preventDefault();
+                this.action();
+            } else {
+                val = this.$input.val();
+                if (val && (val === this.activeSearch)) {
+                    this.showClearIcon();
+                } else {
+                    this.showSearchIcon();
+                }
+            }
+        },
 
-		clear: function () {
-			this.$icon.attr('class', 'icon-search');
-			this.activeSearch = '';
-			this.$input.val('');
-			this.$element.trigger('cleared');
-		},
+        disable: function () {
+            this.$input.attr('disabled', 'disabled');
+            this.$button.addClass('disabled');
+        },
 
-		action: function () {
-			var val = this.$input.val();
-			var inputEmptyOrUnchanged = val === '' || val === this.activeSearch;
+        enable: function () {
+            this.$input.removeAttr('disabled');
+            this.$button.removeClass('disabled');
+        },
 
-			if (this.activeSearch && inputEmptyOrUnchanged) {
-				this.clear();
-			} else if (val) {
-				this.search(val);
-			}
-		},
+        showClearIcon: function () {
+            this.$icon.addClass('glyphicon-remove');
+            this.$icon.removeClass('glyphicon-search');
+        },
 
-		buttonclicked: function (e) {
-			e.preventDefault();
-			if ($(e.currentTarget).is('.disabled, :disabled')) return;
-			this.action();
-		},
+        showSearchIcon: function () {
+            this.$icon.addClass('glyphicon-search');
+            this.$icon.removeClass('glyphicon-remove');
+        }
+    };
 
-		keypress: function (e) {
-			if (e.which === 13) {
-				e.preventDefault();
-			}
-		},
+    // SEARCH PLUGIN DEFINITION
+    $.fn.search = function (option) {
+        return this.each(function () {
+            var $this = $(this);
+            var data = $this.data('search');
+            var options = typeof option === 'object' && option;
 
-		keypressed: function (e) {
-			var val, inputPresentAndUnchanged;
+            if (!data) $this.data('search', (data = new Search(this, options)));
+            if (typeof option === 'string') data[option]();
+        });
+    };
 
-			if (e.which === 13) {
-				e.preventDefault();
-				this.action();
-			} else {
-				val = this.$input.val();
-				inputPresentAndUnchanged = val && (val === this.activeSearch);
-				this.$icon.attr('class', inputPresentAndUnchanged ? 'icon-remove' : 'icon-search');
-			}
-		},
+    $.fn.search.defaults = {};
+    $.fn.search.Constructor = Search;
 
-		disable: function () {
-			this.$input.attr('disabled', 'disabled');
-			this.$button.addClass('disabled');
-		},
-
-		enable: function () {
-			this.$input.removeAttr('disabled');
-			this.$button.removeClass('disabled');
-		}
-
-	};
-
-
-	// SEARCH PLUGIN DEFINITION
-
-	$.fn.search = function (option) {
-		return this.each(function () {
-			var $this = $(this);
-			var data = $this.data('search');
-			var options = typeof option === 'object' && option;
-
-			if (!data) $this.data('search', (data = new Search(this, options)));
-			if (typeof option === 'string') data[option]();
-		});
-	};
-
-	$.fn.search.defaults = {};
-
-	$.fn.search.Constructor = Search;
-
-
-	// SEARCH DATA-API
-
-	$(function () {
-		$('body').on('mousedown.search.data-api', '.search', function () {
-			var $this = $(this);
-			if ($this.data('search')) return;
-			$this.search($this.data());
-		});
-	});
-
+    // SEARCH DATA-API
+    $(function () {
+        $('body').on('mousedown.search.data-api', '.search', function () {
+            var $this = $(this);
+            if ($this.data('search')) return;
+            $this.search($this.data());
+        });
+    });
 }(window.jQuery);

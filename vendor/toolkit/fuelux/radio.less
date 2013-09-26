@@ -1,54 +1,53 @@
+//
+// Radio
+// @TODO - Vertical centering
+// --------------------------------------------------
+
+// Core radio styles
 .radio-custom {
-	input[type=radio] {
-	/* IE cannot fire events if display none or visibility hidden */
-	position: relative;
-	top: -99999px;
-	}
+  input[type="radio"] {
+    display: none;
+  }
 
-	i {
-		background-image: image-url('fuelux/form.png');
-		background-position: 0 -15px;
-		background-repeat: no-repeat;
-		margin-left: -20px;
-		margin-right: 4px;
-		padding-left: 16px;
-		width: 16px;
-		height: 16px;
+  i {
+    background-image: image-url('fuelux/form.png');
+    background-position: 0 -15px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin: 0 4px 0 -20px;
+    padding-left: 16px;
+    width: 16px;
+    height: 16px;
 
-		&.checked {
-			/* checked */
-			background-position: -48px -15px;
-		}
+    &.checked {
+      background-position: -48px -15px;
+    }
 
-		&.disabled {
-			/* disabled */
-			background-position: -64px -15px;
+    &.disabled {
+      background-position: -64px -15px;
 
-			&.checked {
-				/* disabled and checked */
-				background-position: -80px -15px;
-			}
-		}
-	}
+      &.checked {
+        background-position: -80px -15px;
+      }
+    }
+  }
 }
 
+// Hover state for radio
 .radio-custom:hover {
-	i {
-		background-position: -16px -15px;
+  i {
+    background-position: -16px -15px;
 
-		&.checked {
-			/* checked */
-			background-position: -32px -15px;
-		}
+    &.checked {
+      background-position: -32px -15px;
+    }
 
-		&.disabled {
-			/* disabled */
-			background-position: -64px -15px;
+    &.disabled {
+      background-position: -64px -15px;
 
-			&.checked {
-				/* disabled and checked */
-				background-position: -80px -15px;
-			}
-		}
-	}
+      &.checked {
+        background-position: -80px -15px;
+      }
+    }
+  }
 }

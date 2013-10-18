@@ -57,3 +57,8 @@ $(document).ready(function(){
   /* Your javascripts goes here... */
 });
 ```
+
+## Updating to a Specific Version of FuelUX
+```bash
+$ rake fuelux_rails:update TAG=2.4.1
+```

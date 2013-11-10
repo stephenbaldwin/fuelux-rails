@@ -9,7 +9,7 @@
 !function ($) {
 
 
-
+	var old = $.fn.radio;
 
 	// RADIO CONSTRUCTOR AND PROTOTYPE
 
@@ -41,10 +41,12 @@
 			var disabled = !!$radio.prop('disabled');
 
 			this.$icon.removeClass('checked disabled');
+			this.$label.removeClass('checked');
 
 			// set state of radio
 			if (checked === true) {
 				this.$icon.addClass('checked');
+				this.$label.addClass('checked');
 			}
 			if (disabled === true) {
 				this.$icon.addClass('disabled');
@@ -52,8 +54,11 @@
 		},
 
 		resetGroup: function () {
+			var group = $('input[name="' + this.groupName + '"]');
+
 			// reset all radio buttons in group
-			$('input[name=' + this.groupName + ']').next().removeClass('checked');
+			group.next().removeClass('checked');
+			group.parent().removeClass('checked');
 		},
 
 		enable: function () {
@@ -92,24 +97,30 @@
 
 	// RADIO PLUGIN DEFINITION
 
-	$.fn.radio = function (option, value) {
+	$.fn.radio = function (option) {
+		var args = Array.prototype.slice.call( arguments, 1 );
 		var methodReturn;
 
 		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('radio');
+			var $this   = $( this );
+			var data    = $this.data( 'radio' );
 			var options = typeof option === 'object' && option;
 
-			if (!data) $this.data('radio', (data = new Radio(this, options)));
-			if (typeof option === 'string') methodReturn = data[option](value);
+			if( !data ) $this.data('radio', (data = new Radio( this, options ) ) );
+			if( typeof option === 'string' ) methodReturn = data[ option ].apply( data, args );
 		});
 
-		return (methodReturn === undefined) ? $set : methodReturn;
+		return ( methodReturn === undefined ) ? $set : methodReturn;
 	};
 
 	$.fn.radio.defaults = {};
 
 	$.fn.radio.Constructor = Radio;
+
+	$.fn.radio.noConflict = function () {
+		$.fn.radio = old;
+		return this;
+	};
 
 
 	// RADIO DATA-API
@@ -124,5 +135,4 @@
 			});
 		});
 	});
-
 }(window.jQuery);

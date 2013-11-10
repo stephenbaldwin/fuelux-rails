@@ -9,7 +9,7 @@
 !function ($) {
 
 
-
+	var old = $.fn.tree;
 
 	// TREE CONSTRUCTOR AND PROTOTYPE
 
@@ -211,19 +211,20 @@
 
 	// TREE PLUGIN DEFINITION
 
-	$.fn.tree = function (option, value) {
+	$.fn.tree = function (option) {
+		var args = Array.prototype.slice.call( arguments, 1 );
 		var methodReturn;
 
 		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('tree');
+			var $this   = $( this );
+			var data    = $this.data( 'tree' );
 			var options = typeof option === 'object' && option;
 
-			if (!data) $this.data('tree', (data = new Tree(this, options)));
-			if (typeof option === 'string') methodReturn = data[option](value);
+			if( !data ) $this.data('tree', (data = new Tree( this, options ) ) );
+			if( typeof option === 'string' ) methodReturn = data[ option ].apply( data, args );
 		});
 
-		return (methodReturn === undefined) ? $set : methodReturn;
+		return ( methodReturn === undefined ) ? $set : methodReturn;
 	};
 
 	$.fn.tree.defaults = {
@@ -234,4 +235,8 @@
 
 	$.fn.tree.Constructor = Tree;
 
+	$.fn.tree.noConflict = function () {
+		$.fn.tree = old;
+		return this;
+	};
 }(window.jQuery);

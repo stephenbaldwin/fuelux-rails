@@ -9,7 +9,7 @@
 !function ($) {
 
 
-
+	var old = $.fn.spinner;
 
 	// SPINNER CONSTRUCTOR AND PROTOTYPE
 
@@ -72,7 +72,7 @@
 			if(newVal/1){
 				this.options.value = newVal/1;
 			}else{
-				newVal = newVal.replace(/[^0-9]/g,'');
+				newVal = newVal.replace(/[^0-9]/g,'') || '';
 				this.$input.val(newVal);
 				this.options.value = newVal/1;
 			}
@@ -81,9 +81,11 @@
 		},
 
 		stopSpin: function () {
-			clearTimeout(this.switches.timeout);
-			this.switches.count = 1;
-			this.triggerChangedEvent();
+            if(this.switches.timeout!==undefined){
+                clearTimeout(this.switches.timeout);
+                this.switches.count = 1;
+                this.triggerChangedEvent();
+            }
 		},
 
 		triggerChangedEvent: function () {
@@ -170,19 +172,20 @@
 
 	// SPINNER PLUGIN DEFINITION
 
-	$.fn.spinner = function (option,value) {
+	$.fn.spinner = function (option) {
+		var args = Array.prototype.slice.call( arguments, 1 );
 		var methodReturn;
 
 		var $set = this.each(function () {
-			var $this = $(this);
-			var data = $this.data('spinner');
+			var $this   = $( this );
+			var data    = $this.data( 'spinner' );
 			var options = typeof option === 'object' && option;
 
-			if (!data) $this.data('spinner', (data = new Spinner(this, options)));
-			if (typeof option === 'string') methodReturn = data[option](value);
+			if( !data ) $this.data('spinner', (data = new Spinner( this, options ) ) );
+			if( typeof option === 'string' ) methodReturn = data[ option ].apply( data, args );
 		});
 
-		return (methodReturn === undefined) ? $set : methodReturn;
+		return ( methodReturn === undefined ) ? $set : methodReturn;
 	};
 
 	$.fn.spinner.defaults = {
@@ -197,6 +200,11 @@
 
 	$.fn.spinner.Constructor = Spinner;
 
+	$.fn.spinner.noConflict = function () {
+		$.fn.spinner = old;
+		return this;
+	};
+
 
 	// SPINNER DATA-API
 
@@ -207,5 +215,4 @@
 			$this.spinner($this.data());
 		});
 	});
-
 }(window.jQuery);

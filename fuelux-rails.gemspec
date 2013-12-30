@@ -12,6 +12,8 @@ Gem::Specification.new do |s|
   s.email       = ["stephenbaldwin@me.com"]
   s.homepage    = "http://www.github.com/stephenbaldwin/fuelux-rails"
   s.summary     = "Fuel UX for Rails 3.1 Asset Pipeline"
+	s.license 		= 'MIT'
+
   s.description = "fuelux-rails project integrates Fuel UX Bootstrap extensions for Rails 3.1 Asset Pipeline"
 
   s.rubyforge_project = 'fuelux-rails'

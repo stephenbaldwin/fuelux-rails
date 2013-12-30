@@ -15,12 +15,12 @@ namespace :fuelux_rails do
 	SCRIPTS_REPO = "https://raw.github.com/ExactTarget/fuelux/%s/src/%s.js"
 	SCRIPTS_PATH = "./vendor/assets/javascripts/fuelux/%s.js"
 
-	SCRIPTS = %w( util checkbox combobox datagrid intelligent-dropdown pillbox 
-								radio search select spinner tree wizard).freeze
+	SCRIPTS = %w( util checkbox combobox datagrid datepicker intelligent-dropdown pillbox preloader
+								radio scheduler search select spinner tree wizard).freeze
 
 	STYLESHEETS_REPO = "https://raw.github.com/ExactTarget/fuelux/%s/src/less/%s.less"
 	STYLESHEETS_PATH = "./vendor/toolkit/fuelux/%s.less"
-	EXTRA_VARIABLES = "// Tree\n// --------------------------------------------------\n@treeBackgroundHover: #DFEEF5;\n@treeBackgroundSelect: #B9DFF1;\n"
+	EXTRA_VARIABLES = "// Tree\n// --------------------------------------------------\n@treeBackgroundHover: #DFEEF5;\n@treeBackgroundSelect: #B9DFF1;\n// Backup Variables\n// --------------------------------------------------\n@white: #FFFFFF;\n@grayLight: #999999;\n@grayLighter: #EEEEEE;\n"
 
 	def update_javascript(file, tag = 'master')
 		repo = SCRIPTS_REPO % [tag, file]
@@ -72,7 +72,7 @@ namespace :fuelux_rails do
 			doc << original_file.read
 		end
 		lines = IO.readlines(path).map do |line|
-			line.gsub /url\(\.{2}\/img\/([^\)]+)\)/, "image-url('fuelux/\\1')"
+			line.gsub(/url\(\.{2}\/img\/([^\)]+)\)/, "image-url('fuelux/\\1')").gsub /url\(\"?\.{2}\/fonts\/([^\"\)]+)\"?\)/, "font-url('fuelux/\\1')"
 		end
 		File.open(path, 'w') {|doc| doc.puts lines }
 		%(@import "fuelux/#{file}.less";\n)

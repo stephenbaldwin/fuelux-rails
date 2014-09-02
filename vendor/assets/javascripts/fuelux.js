@@ -11,11 +11,11 @@
 //= require fuelux/repeater-list
 //= require fuelux/repeater-thumbnail
 //= require fuelux/repeater
-//= require fuelux/scheduler
 //= require fuelux/search
 //= require fuelux/select
 //= require fuelux/selectlist
 //= require fuelux/spinbox
+//= require fuelux/scheduler
 //= require fuelux/spinner
 //= require fuelux/tree
 //= require fuelux/wizard

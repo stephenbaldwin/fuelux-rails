@@ -2,12 +2,27 @@
  * Fuel UX Combobox
  * https://github.com/ExactTarget/fuelux
  *
- * Copyright (c) 2012 ExactTarget
- * Licensed under the MIT license.
+ * Copyright (c) 2014 ExactTarget
+ * Licensed under the BSD New license.
  */
 
-!function ($) {
+// -- BEGIN UMD WRAPPER PREFACE --
 
+// For more information on UMD visit: 
+// https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
+
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// if AMD loader is available, register as an anonymous module.
+		define(['jquery'], factory);
+	} else {
+		// OR use browser globals if AMD is not present
+		factory(jQuery);
+	}
+}(function ($) {
+	// -- END UMD WRAPPER PREFACE --
+
+	// -- BEGIN MODULE CODE HERE --
 
 	var old = $.fn.combobox;
 
@@ -17,10 +32,14 @@
 	var Combobox = function (element, options) {
 		this.$element = $(element);
 		this.options = $.extend({}, $.fn.combobox.defaults, options);
-		this.$element.on('click', 'a', $.proxy(this.itemclicked, this));
-		this.$element.on('change', 'input', $.proxy(this.inputchanged, this));
+
+		this.$dropMenu = this.$element.find('.dropdown-menu');
 		this.$input = this.$element.find('input');
 		this.$button = this.$element.find('.btn');
+
+		this.$element.on('click.fu.combobox', 'a', $.proxy(this.itemclicked, this));
+		this.$element.on('change.fu.combobox', 'input', $.proxy(this.inputchanged, this));
+		this.$element.on('shown.bs.dropdown', $.proxy(this.menuShown, this));
 
 		// set default selection
 		this.setDefaultSelection();
@@ -29,6 +48,43 @@
 	Combobox.prototype = {
 
 		constructor: Combobox,
+
+		destroy: function() {
+			this.$element.remove();
+			// remove any external bindings
+			// [none]
+
+			// set input value attrbute in markup
+			this.$element.find('input').each(function() {
+				$(this).attr('value', $(this).val());
+			});
+			
+			// empty elements to return to original markup
+			// [none]
+			
+			return this.$element[0].outerHTML;
+		},
+
+		doSelect: function($item){
+			if (typeof $item[0] !== 'undefined') {
+				this.$selectedItem = $item;
+				this.$input.val(this.$selectedItem.text());
+			}
+			else {
+				this.$selectedItem = null;
+			}
+		},
+
+		menuShown: function(){
+			if(this.options.autoResizeMenu){
+				this.resizeMenu();
+			}
+		},
+
+		resizeMenu: function(){
+			var width = this.$element.outerWidth();
+			this.$dropMenu.outerWidth(width);
+		},
 
 		selectedItem: function () {
 			var item = this.$selectedItem;
@@ -46,8 +102,14 @@
 		},
 
 		selectByText: function (text) {
-			var selector = 'li:fuelTextExactCI(' + text + ')';
-			this.selectBySelector(selector);
+			var $item = $([]);
+			this.$element.find('li').each(function(){
+				if((this.textContent || this.innerText || $(this).text() || '').toLowerCase() === (text || '').toLowerCase()){
+					$item = $(this);
+					return false;
+				}
+			});
+			this.doSelect($item);
 		},
 
 		selectByValue: function (value) {
@@ -63,14 +125,7 @@
 
 		selectBySelector: function (selector) {
 			var $item = this.$element.find(selector);
-
-			if (typeof $item[0] !== 'undefined') {
-				this.$selectedItem = $item;
-				this.$input.val(this.$selectedItem.text());
-			}
-			else {
-				this.$selectedItem = null;
-			}
+			this.doSelect($item);
 		},
 
 		setDefaultSelection: function () {
@@ -86,11 +141,13 @@
 		},
 
 		enable: function () {
+			this.$element.removeClass('disabled');
 			this.$input.removeAttr('disabled');
 			this.$button.removeClass('disabled');
 		},
 
 		disable: function () {
+			this.$element.addClass('disabled');
 			this.$input.attr('disabled', true);
 			this.$button.addClass('disabled');
 		},
@@ -106,9 +163,12 @@
 			var data = this.selectedItem();
 
 			// trigger changed event
-			this.$element.trigger('changed', data);
+			this.$element.trigger('changed.fu.combobox', data);
 
 			e.preventDefault();
+
+			// return focus to control after selecting an option
+			this.$element.find('.dropdown-toggle').focus();
 		},
 
 		inputchanged: function (e, extra) {
@@ -128,7 +188,7 @@
 			}
 
 			// trigger changed event
-			this.$element.trigger('changed', data);
+			this.$element.trigger('changed.fu.combobox', data);
 
 		}
 
@@ -143,17 +203,19 @@
 
 		var $set = this.each(function () {
 			var $this   = $( this );
-			var data    = $this.data( 'combobox' );
+			var data    = $this.data('fu.combobox');
 			var options = typeof option === 'object' && option;
 
-			if( !data ) $this.data('combobox', (data = new Combobox( this, options ) ) );
+			if( !data ) $this.data('fu.combobox', (data = new Combobox( this, options ) ) );
 			if( typeof option === 'string' ) methodReturn = data[ option ].apply( data, args );
 		});
 
 		return ( methodReturn === undefined ) ? $set : methodReturn;
 	};
 
-	$.fn.combobox.defaults = {};
+	$.fn.combobox.defaults = {
+		autoResizeMenu: true
+	};
 
 	$.fn.combobox.Constructor = Combobox;
 
@@ -162,22 +224,25 @@
 		return this;
 	};
 
+	// DATA-API
 
-	// COMBOBOX DATA-API
+	$(document).on('mousedown.fu.combobox.data-api', '[data-initialize=combobox]', function (e) {
+		var $control = $(e.target).closest('.combobox');
+		if ( !$control.data('fu.combobox') ) {
+			$control.combobox($control.data());
+		}
+	});
 
+	// Must be domReady for AMD compatibility
 	$(function () {
-		$(window).on('load', function () {
-			$('.combobox').each(function () {
-				var $this = $(this);
-				if ($this.data('combobox')) return;
-				$this.combobox($this.data());
-			});
-		});
-
-		$('body').on('mousedown.combobox.data-api', '.combobox', function () {
+		$('[data-initialize=combobox]').each(function () {
 			var $this = $(this);
-			if ($this.data('combobox')) return;
-			$this.combobox($this.data());
+			if ( !$this.data('fu.combobox') ) {
+				$this.combobox($this.data());
+			}
 		});
 	});
-}(window.jQuery);
+
+// -- BEGIN UMD WRAPPER AFTERWORD --
+}));
+	// -- END UMD WRAPPER AFTERWORD --

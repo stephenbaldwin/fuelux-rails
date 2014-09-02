@@ -3,13 +3,14 @@
 	.clearfix;
 
 	border: 1px solid @navbarBorder;
-	.border-radius(@baseBorderRadius);
-	.box-shadow(0 1px 4px rgba(0,0,0,.065));
+	border-radius: @baseBorderRadius;
+	box-shadow: 0 1px 4px rgba(0,0,0,.065);
 	background-color: @tableBackgroundAccent;
 	position: relative;
+	min-height: 48px;
 	overflow: hidden;
 
-	ul {
+	> .steps {
 		list-style: none outside none;
 		padding: 0;
 		margin: 0;
@@ -43,7 +44,7 @@
 			background: #ededed;
 			color: @grayLight;
 			font-size: 16px;
-			cursor: default;
+			cursor: not-allowed;
 
 			.chevron {
 				border: 24px solid transparent;
@@ -87,13 +88,23 @@
 			&.active {
 				background: #f1f6fc;
 				color: @infoText;
+				cursor: default;
 
 				.chevron:before {
 					border-left: 14px solid #f1f6fc;
 				}
+
+				.badge {
+					background-color: @infoText;
+				}
 			}
+
 			.badge {
 				margin-right: 8px;
+			}
+
+			.badge-success {
+				background-color: @successText;
 			}
 		}
 
@@ -103,7 +114,7 @@
 		}
 	}
 
-	.actions {
+	> .actions {
 		z-index: 1000;
 		position: absolute;
 		right: 0;
@@ -122,31 +133,54 @@
 		}
 
 		.btn-prev {
-			i {
+			&[disabled] {
+				cursor: not-allowed;
+			}
+
+			span {
 				margin-right: 5px;
 			}
 		}
 
 		.btn-next {
-			i {
+			&[disabled] {
+				cursor: not-allowed;
+			}
+
+			span {
 				margin-left: 5px;
 			}
 		}
 	}
-}
 
-.step-content {
-	.step-pane {
-		display: none;
+	.step-content {
+		border-top: 1px solid #D4D4D4;
+		padding: 10px;
+		float: left;
+		width: 100%;
+
+		.step-pane {
+			display: none;
+		}
+
+		> .active {
+			display: block;
+
+			.btn-group {
+				.active {
+					display: inline-block;
+				}
+			}
+		}
 	}
 
-	.active {
-		display: block;
-		
-		.btn-group {
-			.active {
-				display: inline-block;
-			}
+	// when complete
+	&.complete {
+		> .actions .glyphicon-arrow-right:before {
+			display: none;
+		}
+		> .actions .glyphicon-arrow-right {
+			margin-left: 0;
 		}
 	}
 }

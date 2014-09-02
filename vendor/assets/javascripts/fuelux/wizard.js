@@ -2,12 +2,27 @@
  * Fuel UX Wizard
  * https://github.com/ExactTarget/fuelux
  *
- * Copyright (c) 2012 ExactTarget
- * Licensed under the MIT license.
+ * Copyright (c) 2014 ExactTarget
+ * Licensed under the BSD New license.
  */
 
-!function ($) {
+// -- BEGIN UMD WRAPPER PREFACE --
 
+// For more information on UMD visit: 
+// https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
+
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// if AMD loader is available, register as an anonymous module.
+		define(['jquery'], factory);
+	} else {
+		// OR use browser globals if AMD is not present
+		factory(jQuery);
+	}
+}(function ($) {
+	// -- END UMD WRAPPER PREFACE --
+		
+	// -- BEGIN MODULE CODE HERE --
 
 	var old = $.fn.wizard;
 
@@ -18,7 +33,7 @@
 
 		this.$element = $(element);
 		this.options = $.extend({}, $.fn.wizard.defaults, options);
-		this.options.disablePreviousStep = ( this.$element.data().restrict === "previous" ) ? true : false;
+		this.options.disablePreviousStep = ( this.$element.attr('data-restrict') === "previous" ) ? true : this.options.disablePreviousStep;
 		this.currentStep = this.options.selectedItem.step;
 		this.numSteps = this.$element.find('.steps li').length;
 		this.$prevBtn = this.$element.find('button.btn-prev');
@@ -29,13 +44,11 @@
 		this.$nextBtn.append(kids);
 
 		// handle events
-		this.$prevBtn.on('click', $.proxy(this.previous, this));
-		this.$nextBtn.on('click', $.proxy(this.next, this));
-		this.$element.on('click', 'li.complete', $.proxy(this.stepclicked, this));
+		this.$prevBtn.on('click.fu.wizard', $.proxy(this.previous, this));
+		this.$nextBtn.on('click.fu.wizard', $.proxy(this.next, this));
+		this.$element.on('click.fu.wizard', 'li.complete', $.proxy(this.stepclicked, this));
 		
-		if(this.currentStep > 1) {
-			this.selectedItem(this.options.selectedItem);
-		}
+		this.selectedItem(this.options.selectedItem);
 
 		if( this.options.disablePreviousStep ) {
 			this.$prevBtn.attr( 'disabled', true );
@@ -46,6 +59,94 @@
 	Wizard.prototype = {
 
 		constructor: Wizard,
+
+		destroy: function() {
+			this.$element.remove();
+			// any external bindings [none]
+			// empty elements to return to original markup [none]
+			// returns string of markup
+			return this.$element[0].outerHTML;
+		},
+
+		//index is 1 based
+		//second parameter can be array of objects [{ ... }, { ... }] or you can pass n additional objects as args
+		//object structure is as follows (all params are optional): { badge: '', label: '', pane: '' }
+		addSteps: function(index){
+			var items = [].slice.call(arguments).slice(1);
+			var $steps = this.$element.find('.steps');
+			var $stepContent = this.$element.find('.step-content');
+			var i, l, $pane, $startPane, $startStep, $step;
+
+			index = (index===-1 || (index>(this.numSteps+1))) ? this.numSteps+1 : index;
+			if(items[0] instanceof Array){
+				items = items[0];
+			}
+
+			$startStep = $steps.find('li:nth-child(' + index + ')');
+			$startPane = $stepContent.find('.step-pane:nth-child(' + index + ')');
+			if($startStep.length<1){
+				$startStep = null;
+			}
+
+			for(i=0, l=items.length; i<l; i++){
+				$step = $('<li data-step="' + index + '"><span class="badge badge-info"></span></li>');
+				$step.append(items[i].label || '').append('<span class="chevron"></span>');
+				$step.find('.badge').append(items[i].badge || index);
+
+				$pane = $('<div class="step-pane" data-step="' + index + '"></div>');
+				$pane.append(items[i].pane || '');
+
+				if(!$startStep){
+					$steps.append($step);
+					$stepContent.append($pane);
+				}else{
+					$startStep.before($step);
+					$startPane.before($pane);
+				}
+				index++;
+			}
+
+			this.syncSteps();
+			this.numSteps = $steps.find('li').length;
+			this.setState();
+		},
+
+		//index is 1 based, howMany is number to remove
+		removeSteps: function(index, howMany){
+			var action = 'nextAll';
+			var i = 0;
+			var $steps = this.$element.find('.steps');
+			var $stepContent = this.$element.find('.step-content');
+			var $start;
+
+			howMany = (howMany!==undefined) ? howMany : 1;
+
+			if(index>$steps.find('li').length){
+				$start = $steps.find('li:last');
+			}else{
+				$start = $steps.find('li:nth-child(' + index + ')').prev();
+				if($start.length<1){
+					action = 'children';
+					$start = $steps;
+				}
+			}
+
+			$start[action]().each(function(){
+				var item = $(this);
+				var step = item.attr('data-step');
+				if(i<howMany){
+					item.remove();
+					$stepContent.find('.step-pane[data-step="' + step + '"]:first').remove();
+				}else{
+					return false;
+				}
+				i++;
+			});
+
+			this.syncSteps();
+			this.numSteps = $steps.find('li').length;
+			this.setState();
+		},
 
 		setState: function () {
 			var canMovePrev = (this.currentStep > 1);
@@ -58,15 +159,21 @@
 			}
 
 			// change button text of last step, if specified
-			var data = this.$nextBtn.data();
-			if (data && data.last) {
-				this.lastText = data.last;
-				if (typeof this.lastText !== 'undefined') {
-					// replace text
-					var text = (lastStep !== true) ? this.nextText : this.lastText;
-					var kids = this.$nextBtn.children().detach();
-					this.$nextBtn.text(text).append(kids);
+			var last = this.$nextBtn.attr('data-last');
+			if (last) {
+				this.lastText = last;
+				// replace text
+				var text = this.nextText;
+				if ( lastStep === true ) {
+					text = this.lastText;
+					// add status class to wizard
+					this.$element.addClass('complete');
 				}
+				else {
+					this.$element.removeClass('complete');
+				}
+				var kids = this.$nextBtn.children().detach();
+				this.$nextBtn.text(text).append(kids);
 			}
 
 			// reset classes for all steps
@@ -87,9 +194,10 @@
 			$currentStep.find('span.badge').addClass('badge-info');
 
 			// set display of target element
-			var target = $currentStep.data().target;
-			this.$element.next('.step-content').find('.step-pane').removeClass('active');
-			$(target).addClass('active');
+			var $stepContent = this.$element.find('.step-content');
+			var target = $currentStep.attr('data-step');
+			$stepContent.find('.step-pane').removeClass('active');
+			$stepContent.find('.step-pane[data-step="' + target + '"]:first').addClass('active');
 
 			// reset the wizard position to the left
 			this.$element.find('.steps').first().attr('style','margin-left: 0');
@@ -123,7 +231,13 @@
 				}
 			}
 
-			this.$element.trigger('changed');
+			// only fire changed event after initializing
+			if(typeof(this.initialized) !== 'undefined' ) {
+				var e = $.Event('changed.fu.wizard');
+				this.$element.trigger(e, {step: this.currentStep});
+			}
+
+			this.initialized = true;
 		},
 
 		stepclicked: function (e) {
@@ -138,13 +252,32 @@
 			}
 
 			if( canMovePrev ) {
-				var evt = $.Event('stepclick');
+				var evt = $.Event('stepclicked.fu.wizard');
 				this.$element.trigger(evt, {step: index + 1});
-				if (evt.isDefaultPrevented()) return;
+				if (evt.isDefaultPrevented()) { return; }
 
 				this.currentStep = (index + 1);
 				this.setState();
 			}
+		},
+
+		syncSteps: function(){
+			var i = 1;
+			var $steps = this.$element.find('.steps');
+			var $stepContent = this.$element.find('.step-content');
+
+			$steps.children().each(function(){
+				var item = $(this);
+				var badge = item.find('.badge');
+				var step = item.attr('data-step');
+
+				if(!isNaN(parseInt(badge.html(), 10))){
+					badge.html(i);
+				}
+				item.attr('data-step', i);
+				$stepContent.find('.step-pane[data-step="' + step + '"]:last').attr('data-step', i);
+				i++;
+			});
 		},
 
 		previous: function () {
@@ -153,13 +286,22 @@
 				canMovePrev = false;
 			}
 			if (canMovePrev) {
-				var e = $.Event('change');
+				var e = $.Event('actionclicked.fu.wizard');
 				this.$element.trigger(e, {step: this.currentStep, direction: 'previous'});
-				if (e.isDefaultPrevented()) return;
+				if (e.isDefaultPrevented()) { return; } // don't increment
 
 				this.currentStep -= 1;
 				this.setState();
 			}
+
+			// return focus to control after selecting an option
+			if( this.$prevBtn.is(':disabled') ) {
+				this.$nextBtn.focus();
+			}
+			else {
+				this.$prevBtn.focus();
+			}
+
 		},
 
 		next: function () {
@@ -167,16 +309,23 @@
 			var lastStep = (this.currentStep === this.numSteps);
 
 			if (canMoveNext) {
-				var e = $.Event('change');
+				var e = $.Event('actionclicked.fu.wizard');
 				this.$element.trigger(e, {step: this.currentStep, direction: 'next'});
-
-				if (e.isDefaultPrevented()) return;
+				if (e.isDefaultPrevented()) { return; }	// don't increment
 
 				this.currentStep += 1;
 				this.setState();
 			}
 			else if (lastStep) {
-				this.$element.trigger('finished');
+				this.$element.trigger('finished.fu.wizard');
+			}
+
+			// return focus to control after selecting an option
+			if( this.$nextBtn.is(':disabled') ) {
+				this.$prevBtn.focus();
+			}
+			else {
+				this.$nextBtn.focus();
 			}
 		},
 
@@ -190,6 +339,12 @@
 				if(step >= 1 && step <= this.numSteps) {
 					this.currentStep = step;
 					this.setState();
+				}else{
+					step = this.$element.find('.steps li.active:first').attr('data-step');
+					if(!isNaN(step)){
+						this.currentStep = parseInt(step, 10);
+						this.setState();
+					}
 				}
 
 				retVal = this;
@@ -211,10 +366,10 @@
 
 		var $set = this.each(function () {
 			var $this   = $( this );
-			var data    = $this.data( 'wizard' );
+			var data    = $this.data('fu.wizard');
 			var options = typeof option === 'object' && option;
 
-			if( !data ) $this.data('wizard', (data = new Wizard( this, options ) ) );
+			if( !data ) $this.data('fu.wizard', (data = new Wizard( this, options ) ) );
 			if( typeof option === 'string' ) methodReturn = data[ option ].apply( data, args );
 		});
 
@@ -222,7 +377,8 @@
 	};
 
 	$.fn.wizard.defaults = {
-        selectedItem: {step:1}
+		disablePreviousStep: false,
+		selectedItem: { step: -1 }	//-1 means it will attempt to look for "active" class in order to set the step
 	};
 
 	$.fn.wizard.Constructor = Wizard;
@@ -233,13 +389,24 @@
 	};
 
 
-	// WIZARD DATA-API
+	// DATA-API
 
+	$(document).on('mouseover.fu.wizard.data-api', '[data-initialize=wizard]', function (e) {
+		var $control = $(e.target).closest('.wizard');
+		if ( !$control.data('fu.wizard') ) {
+			$control.wizard($control.data());
+		}
+	});
+
+	// Must be domReady for AMD compatibility
 	$(function () {
-		$('body').on('mouseover.wizard.data-api', '.wizard', function () {
+		$('[data-initialize=wizard]').each(function () {
 			var $this = $(this);
-			if ($this.data('wizard')) return;
+			if ($this.data('fu.wizard')) return;
 			$this.wizard($this.data());
 		});
 	});
-}(window.jQuery);
+
+// -- BEGIN UMD WRAPPER AFTERWORD --
+}));
+	// -- END UMD WRAPPER AFTERWORD --

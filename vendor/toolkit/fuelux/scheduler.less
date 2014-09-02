@@ -1,206 +1,246 @@
 .scheduler {
-    &-end {
-        display: none;
 
-        .datepicker {
-            display: none;
-            float: left;
-            margin-left: 10px;
-        }
+	.control-label {
+		min-width: 7em;
+	}
 
-        .select {
-            float: left;
-        }
+	.inline-form-text {
+		float: left;
+		line-height: 27px;
+		margin-top:4px;
+	}
 
-        .spinner {
-            display: none;
-            float: left;
-            margin-left: 10px;
+	/* -------------------------------
+	START DATE/TIME
+------------------------------- */
 
-            input {
-                margin-bottom: 0;
-            }
+	.start-datetime {
 
-            span {
-                line-height: 27px;
-            }
-        }
-    }
+		&.form-group {
+			margin-bottom: 0;
+		}
 
-    &-repeat {
-        .dropdown-menu {
-            max-height: 200px;
-            overflow: auto;
-        }
+		.form-group {
+			margin-left: 0;
+		}
 
-        .repeat-interval {
-            .clearfix;
+		.combobox {
+			max-width: 9em;
 
-            &-panel {
-                display: none;
-                float: left;
+			.dropdown-menu {
+				max-height: 200px;
+				overflow: auto;
+			}
 
-                .repeat-interval-pretext,
-                .repeat-interval-text
-                {
-                    float: left;
-                    line-height: 27px;
-                }
+		}
 
-                .repeat-interval-pretext {
-                    padding: 0 10px;
-                }
+		.dropdown {
+			float: left;
+			margin: 0 10px 0 0;
+		}
 
-                .spinner {
-                    float: left;
-                    margin-right: 0;
+	}
 
-                    input {
-                        margin-bottom: 0;
-                    }
-                }
-            }
-        }
+	/* -------------------------------
+	TIMEZONE
+------------------------------- */
 
-        .scheduler-monthly {
-            padding-left: 15px;
+	.timezone-container {
+		.input-group {
+			max-width: 20em;
+		}
 
-            &-date {
-                margin-top: 10px;
-                .clearfix;
+		.dropdown-label {
+			height: 18px;
+			white-space: nowrap;
+			max-width: 20em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 
-                .select {
-                    margin-left: 5px;
-                }
-            }
+		.dropdown-menu {
+			max-height: 200px;
+			overflow: auto;
+		}
 
-            &-day {
-                margin-top: 10px;
-                .clearfix;
+	}
 
-                .month-day-pos {
-                    margin: 0 5px;
-                }
-            }
-        }
+/* -------------------------------
+	REPEAT PANELS
+------------------------------- */
 
-        .scheduler-yearly {
-            padding-left: 15px;
+	.repeat-panel {
+		margin-left: 0;
 
-            &-date {
-                margin-top: 10px;
-                .clearfix;
+		label {
+			font-weight: normal;
+		}
+		
+		.radio {
+			margin-right: 10px;
+		}
 
-                .select {
-                    &.year-month {
-                        margin-left: 5px;
+		.form-group {
+			margin-left: 0;
+		}
 
-                        &-day {
-                            margin-left: 10px;
-                        }
-                    }
-                }
-            }
+	}
 
-            &-day {
-                margin-top: 10px;
-                .clearfix;
+// EVERY
 
-                .scheduler-yearly-day-text {
-                    float: left;
-                    line-height: 27px;
-                    margin: 0 10px;
-                }
+	.repeat-interval {
+		margin-left: 0;
 
-                .year-month-day-pos {
-                    margin: 0 5px;
-                }
-            }
-        }
+		.clearfix;
 
-        .scheduler-weekly {
-            padding: 10px 0 0 15px;
+		.form-group {
+			margin-left: 0;
+		}
 
-            .btn-group {
-                &.disabled {
-                    position: relative;
-                    opacity: 0.65;
+		.dropdown-menu {
+			max-height: 200px;
+			overflow: auto;
+		}
 
-                    &:before {
-                        background: transparent;
-                        bottom: 0;
-                        content: "";
-                        left: 0;
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        z-index: 5;
-                    }
-                }
-            }
-        }
+		.repeat-every-panel {
+			float: left;
 
-        .select {
-            float: left;
-        }
+			.repeat-every-pretext {
+				padding: 0 10px;
+			}
 
-        label.radio {
-            float: left;
-            line-height: 27px;
+			.spinbox {
+				float: left;
+				margin-right: 10px;
 
-            input {
-                margin-top: 8px;
-            }
-        }
-    }
+				input {
+					margin-bottom: 0;
+				}
+			}
 
-    &-start {
-        .combobox {
-            .dropdown-menu {
-                max-height: 200px;
-                overflow: auto;
-            }
+		}
 
-            input {
-                width: 65px;
-            }
-        }
+	}
 
-        .dropdown {
-            float: left;
-            margin: 0 10px 0 0;
-        }
-    }
+	// MONTHLY
 
-    &-table {
-        td {
-            margin: 0;
-            padding: 5px;
-            vertical-align: top;
+		.repeat-monthly {
 
-            &.scheduler-label {
-                padding-top: 8px;
-            }
-        }
-    }
+			.repeat-monthly-date {
+				margin-top: 10px;
+				.clearfix;
 
-    &-timezone {
-        .dropdown-label {
-            height: 18px;
-            white-space: nowrap;
-            width: 334px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+				.selectlist {
+					margin-left: 5px;
+				}
+			}
 
-        .dropdown-menu {
-            max-height: 200px;
-            overflow: auto;
-            width: 376px;
-        }
-    }
+			.repeat-monthly-day {
+				margin-top: 10px;
+				.clearfix;
+			}
 
-    .recurrence-panel {
-        display: none;
-    }
+			.month-days {
+				margin-left: 10px;
+			}
+
+		}
+
+// YEARLY
+
+		.repeat-yearly {
+
+			.repeat-yearly-date {
+				margin-top: 10px;
+				.clearfix;
+
+				.year-month-day {
+					margin-left: 10px;
+				}
+			}
+
+			.year-month-days {
+				margin-left: 10px;
+			}
+
+			.year-month {
+				margin-left: 10px;
+
+			}
+
+			.repeat-yearly-day {
+				margin-top: 10px;
+				.clearfix;
+
+				.repeat-yearly-day-text {
+					margin-left: 10px;
+				}
+
+			}
+
+		}
+
+// WEEKLY
+
+		.repeat-weekly {
+
+			button:not(.active) {
+				background-color: #fff;
+			}
+
+			.btn-group {
+				&.disabled {
+					position: relative;
+					opacity: 0.65;
+
+					&:before {
+						background: transparent;
+						bottom: 0;
+						content: "";
+						left: 0;
+						position: absolute;
+						right: 0;
+						top: 0;
+						z-index: 5;
+					}
+				}
+			}
+		}
+
+		.selectlist {
+			float: left;
+		}
+
+		label.radio {
+			float: left;
+			line-height: 27px;
+
+			input {
+				margin-top: 8px;
+			}
+		}
+
+/* -------------------------------
+END
+------------------------------- */
+
+	.repeat-end {
+
+		.end-after {
+			float: left;
+			display: inline-block;
+			margin-right: 10px;
+		}
+		
+		.form-group {
+			margin-left: 0;
+		}
+
+		.end-option-panel {
+
+		}
+
+	}
+
+
 }

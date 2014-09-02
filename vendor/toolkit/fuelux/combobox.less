@@ -1,11 +1,7 @@
 .combobox {
-    display: inline-block;
-
-	a {
-		font-size: @baseFontSize;
+	&.disabled {
+		.input-group-btn {
+			cursor: not-allowed;
+		}
 	}
-
-    button.btn {
-        border-radius: 0 @inputBorderRadius @inputBorderRadius 0;
-    }
 }
